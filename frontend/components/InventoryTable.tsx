@@ -1,9 +1,14 @@
 "use client"
 
+interface InventoryTableProps{
+    inventory: Record<string, number>;
+}
 
-const InventoryTable = () => {
+const InventoryTable = ({inventory}: InventoryTableProps) => {
     return(
-        <></>
+        <>
+        {JSON.stringify(inventory)}
+        </>
     )
 }
 

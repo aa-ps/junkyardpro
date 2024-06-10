@@ -18,29 +18,27 @@ export type TrimOption = {
 };
 
 export type PartCategory = {
+  id: number;
   name: string;
 };
 
 export type Part = {
+  id: number;
   name: string;
   category_id: number;
 };
 
 export type SelectedPart = {
+  id: number;
   name: string;
   category_id: number;
   available: boolean;
-}
+};
 
 type AddVehicleFormProps = {
   years: YearOption[];
   partCategories: PartCategory[];
-  parts: Part[];
-};
-
-// Function to initialize selected parts with the 'available' property
-const initializeSelectedParts = (parts: Part[]) => {
-  return parts.map(part => ({ ...part, available: true }));
+  parts: SelectedPart[];
 };
 
 const AddVehicleForm = ({
@@ -54,16 +52,15 @@ const AddVehicleForm = ({
   const [selectedTrim, setSelectedTrim] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<Array<Error>>([]);
-  
-  const initialSelectedParts = initializeSelectedParts(parts);
-  const [selectedParts, setSelectedParts] = useState(initialSelectedParts);
+  const [selectedParts, setSelectedParts] = useState(parts);
 
   const apiEndpoint = "http://localhost:3333";
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!selectedYear || !selectedMake || !selectedModel || !selectedTrim) return;
+    if (!selectedYear || !selectedMake || !selectedModel || !selectedTrim)
+      return;
 
     setIsLoading(true);
     setErrors([]);
@@ -111,19 +108,18 @@ const AddVehicleForm = ({
       />
       {selectedYear && selectedMake && selectedModel && selectedTrim && (
         <PartsInput
-          parts={parts}
           partCategories={partCategories}
           selectedParts={selectedParts}
           setSelectedParts={setSelectedParts}
         />
       )}
-      {errors &&
+      {errors && (
         <p className="error-message">
           {errors.map((err: Error, index: number) => (
             <span key={index}>{err.message}</span>
           ))}
         </p>
-      }
+      )}
       <button
         className="form-button"
         type="submit"

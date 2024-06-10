@@ -36,7 +36,6 @@ const VehicleInput = ({
   const [isLoadingMakes, setIsLoadingMakes] = useState<boolean>(false);
   const [isLoadingModels, setIsLoadingModels] = useState<boolean>(false);
   const [isLoadingTrims, setIsLoadingTrims] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const apiEndpoint = "http://localhost:3333";
 
@@ -49,7 +48,7 @@ const VehicleInput = ({
       return response.json();
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
+        setErrors([...errors, err]);
       }
       return [];
     }
