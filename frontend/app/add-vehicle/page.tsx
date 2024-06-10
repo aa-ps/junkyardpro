@@ -1,11 +1,13 @@
-import AddVehicleForm, {
-  Part,
-  PartCategory,
-  SelectedPart,
-  YearOption,
-} from "@/components/forms/AddVehicle/AddVehicleForm";
+import AddVehicleForm from "@/components/forms/AddVehicle/AddVehicleForm";
+import { Part, PartCategory, SelectedPart, YearOption } from "@/interfaces/app_interfaces";
+import { Metadata } from "next";
 
-const initializeSelectedParts = (parts: Part[]) => {
+export const metadata: Metadata = {
+  title: "Add Vehicle",
+  description: "Add a new vehicle to your inventory on JunkYardPro.",
+};
+
+const initializeSelectedParts = (parts: Part[]): SelectedPart[] => {
   return parts.map((part) => ({ ...part, available: true }));
 };
 

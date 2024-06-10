@@ -64,7 +64,8 @@ app.get("/part-categories", async (req, res) => {
 });
 
 app.get("/parts", async (req, res) => {
-  const query = "SELECT DISTINCT id, name, category_id FROM parts ORDER BY name";
+  const query =
+    "SELECT DISTINCT id, name, category_id FROM parts ORDER BY name";
   try {
     const results = await executeQuery(query);
     res.json(results);
@@ -117,13 +118,32 @@ app.get("/trims", async (req, res) => {
 });
 
 app.get("/inventory", async (req, res) => {
-  const query = "SELECT * FROM added_vehicles";
+  const query =
+    "SELECT added_vehicles.id, year, make, model, trim FROM added_vehicles JOIN vehicles ON added_vehicles.vehicle_id=vehicles.id ORDER BY added_vehicles.id";
   try {
     const results = await executeQuery(query);
     res.json(results);
   } catch (err) {
     res.status(500).send(err.message);
   }
+});
+
+app.get("/inventory/stats", async (req, res) => {
+  const vehicle_res = await executeQuery(
+    "SELECT COUNT(*) AS count FROM added_vehicles"
+  );
+  const part_res = await executeQuery(
+    "SELECT COUNT(*) AS count FROM vehicle_parts WHERE available=TRUE"
+  );
+  const recent_vehicle_res = await executeQuery("SELECT * FROM added_vehicles JOIN vehicles ON added_vehicles.vehicle_id=vehicles.id ORDER BY added_vehicles.id DESC LIMIT 3")
+  const { count: vehicle_count } = vehicle_res[0];
+  const { count: part_count } = part_res[0];
+
+  res.json({
+    vehicle_count: vehicle_count,
+    part_count: part_count,
+    recent_vehicles: recent_vehicle_res,
+  });
 });
 
 app.post("/add-vehicle", async (req, res) => {
@@ -167,7 +187,7 @@ app.post("/add-vehicle", async (req, res) => {
       await executeQuery("SELECT LAST_INSERT_ID() AS id")
     )[0].id;
 
-    const addPartsPromises = parts.map(({id, name, category_id, available}) =>
+    const addPartsPromises = parts.map(({ id, name, category_id, available }) =>
       executeQuery(
         "INSERT INTO vehicle_parts (vehicle_id, part_id, available) VALUES (?, ?, ?)",
         [addedVehicleId, id, available]

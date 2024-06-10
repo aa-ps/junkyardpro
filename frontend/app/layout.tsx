@@ -6,7 +6,10 @@ import Sidebar from "@/components/navigation/Sidebar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "JunkYardPro",
+  title: {
+    template: '%s | JunkYardPro',
+    default: 'JunkYardPro',
+  },
   description: "A solution for junkyard owners to manage their inventory.",
 };
 

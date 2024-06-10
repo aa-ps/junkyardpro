@@ -1,41 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import VehicleInput from "./VehicleInput";
 import PartsInput from "./PartsInput";
+import { PartCategory, SelectedPart, YearOption } from "@/interfaces/app_interfaces";
 
-export type YearOption = {
-  year: number;
-};
-export type MakeOption = {
-  make: string;
-};
-export type ModelOption = {
-  model: string;
-};
-export type TrimOption = {
-  trim: string;
-};
-
-export type PartCategory = {
-  id: number;
-  name: string;
-};
-
-export type Part = {
-  id: number;
-  name: string;
-  category_id: number;
-};
-
-export type SelectedPart = {
-  id: number;
-  name: string;
-  category_id: number;
-  available: boolean;
-};
-
-type AddVehicleFormProps = {
+interface AddVehicleFormProps{
   years: YearOption[];
   partCategories: PartCategory[];
   parts: SelectedPart[];
@@ -55,6 +26,7 @@ const AddVehicleForm = ({
   const [selectedParts, setSelectedParts] = useState(parts);
 
   const apiEndpoint = "http://localhost:3333";
+  const router = useRouter();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -79,9 +51,7 @@ const AddVehicleForm = ({
       });
 
       if (!res.ok) throw new Error("Failed to add vehicle");
-
-      const data = await res.json();
-      console.log("Vehicle added:", data);
+      router.push('/inventory');
     } catch (err) {
       if (err instanceof Error) {
         setErrors([...errors, err]);

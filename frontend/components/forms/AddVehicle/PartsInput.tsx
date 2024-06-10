@@ -19,6 +19,7 @@ const PartsInput = ({ partCategories, selectedParts, setSelectedParts }: PartsIn
     }));
   };
 
+  // TODO: Possibly reduce to O(1) and directly get the part where the index of it is equal to the id.
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>, id: number): void => {
     const { checked } = e.target;
     const updatedParts: SelectedPart[] = selectedParts.map((part: SelectedPart): SelectedPart => {

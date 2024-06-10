@@ -1,7 +1,7 @@
 "use client";
 
+import { MakeOption, ModelOption, TrimOption, YearOption } from "@/interfaces/app_interfaces";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { MakeOption, ModelOption, TrimOption, YearOption } from "./AddVehicleForm";
 
 interface VehicleInputProps {
   years: YearOption[];
