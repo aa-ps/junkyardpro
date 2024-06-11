@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Dashboard to manage your junkyard inventory on JunkYardPro.",
 };
 
-export default async function Dashboard() {
+const Dashboard = async () => {
   const { part_count, vehicle_count, recent_vehicles }: InventoryStats = await (
     await fetch("http://localhost:3333/inventory/stats", { cache: "no-store" })
   ).json();
@@ -32,16 +32,18 @@ export default async function Dashboard() {
         <h2 className="text-xl font-semibold mb-2">Recent Activity</h2>
         <div className="bg-white p-4 rounded-lg shadow-md">
           <ul className="list-disc list-inside">
-            {recent_vehicles.map((vehicle: Vehicle, index: number) => {
+            {recent_vehicles.length > 0 ? recent_vehicles.map((vehicle: Vehicle, index: number) => {
               return (
                 <li
                   key={index}
                 >{`Added new vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`}</li>
               );
-            })}
+            }) : <li>There is no recent activity.</li>}
           </ul>
         </div>
       </section>
     </main>
   );
 }
+
+export default Dashboard;

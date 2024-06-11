@@ -5,6 +5,15 @@ const path = require("path");
 const mysql = require("mysql2/promise");
 
 const TABLE_QUERIES = {
+  createUsersTable: `
+    CREATE TABLE IF NOT EXISTS users (
+        id INT NOT NULL AUTO_INCREMENT,
+        username VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    );
+  `,
   createVehiclesTable: `
     CREATE TABLE IF NOT EXISTS vehicles (
         id INT NOT NULL AUTO_INCREMENT,
@@ -54,9 +63,11 @@ const TABLE_QUERIES = {
   createInventoryTable: `
     CREATE TABLE IF NOT EXISTS inventory (
         id INT NOT NULL AUTO_INCREMENT,
+        user_id INT NOT NULL,
         vehicle_id INT NOT NULL,
         vehicle_part_id INT NOT NULL,
         PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (vehicle_id) REFERENCES added_vehicles(id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (vehicle_part_id) REFERENCES vehicle_parts(id) ON DELETE CASCADE ON UPDATE CASCADE
     );
@@ -103,7 +114,7 @@ async function readCSV(filePath) {
 
 async function generateData(connection) {
   const vehiclesFilePath = path.join(__dirname, "data/vehicles.csv");
-  const partsFilePath = path.join(__dirname, "data/parts.csv");
+  const partsFilePath = path.join(__dirname, "data/concise_parts.csv"); // use parts.csv or concise_parts.csv
 
   try {
     const vehicleRows = await readCSV(vehiclesFilePath);

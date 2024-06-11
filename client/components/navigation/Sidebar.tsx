@@ -14,9 +14,9 @@ const Sidebar = () => {
       </div>
       <nav className="flex flex-col w-full">
         <Link
-          href="/"
+          href="/dashboard"
           className={`flex gap-4 p-2 justify-center md:justify-start hover:bg-gray-600 ${
-            pathName === "/" ? "bg-gray-700" : ""
+            pathName === "/dashboard" ? "bg-gray-700" : ""
           }`}
         >
           <MdDashboard size={25} title="Dashboard" />
@@ -52,10 +52,18 @@ const Sidebar = () => {
       </nav>
       <footer className="flex gap-4 mt-auto pb-5">
         <Link href="https://github.com/aa-ps">
-          <FaGithub aria-label="GitHub Profile" size={25} title="GitHub Profile" />
+          <FaGithub
+            aria-label="GitHub Profile"
+            size={25}
+            title="GitHub Profile"
+          />
         </Link>
         <Link href="https://www.linkedin.com/in/aaron-pulido-salinas/">
-          <FaLinkedin aria-label="LinkedIn Profile" size={25} title="LinkedIn Profile" />
+          <FaLinkedin
+            aria-label="LinkedIn Profile"
+            size={25}
+            title="LinkedIn Profile"
+          />
         </Link>
       </footer>
     </div>

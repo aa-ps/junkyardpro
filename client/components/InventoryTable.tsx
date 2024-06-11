@@ -8,17 +8,17 @@ interface InventoryTableProps {
 
 const InventoryTable = ({ inventory }: InventoryTableProps) => {
   // Could hardcode headers if you don't plan on changing them.
-  // TODO: Handle when inventory is length of 0, only show the headers.
+  const headers = inventory.length > 0 ? Object.keys(inventory[0]) : ["id", "type", "brand", "model"];
   const renderHeader = () => {
     return (
       <thead className="bg-gray-200">
         <tr>
-          {Object.keys(inventory[0]).map((key) => (
+          {headers.map((header) => (
             <th
-              key={key}
+              key={header}
               className="uppercase px-4 py-2 border-b border-gray-300 text-left"
             >
-              {key}
+              {header}
             </th>
           ))}
         </tr>
@@ -27,7 +27,17 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
   };
 
   const renderBody = () => {
-    // Instead of looping, you can you get the object values directly if you don't plan on changing them.
+    if (inventory.length === 0) {
+      return (
+        <tbody>
+          <tr>
+            <td colSpan={Object.keys(inventory[0] || headers).length} className="text-center p-4">
+              No vehicles in inventory.
+            </td>
+          </tr>
+        </tbody>
+      );
+    }
     return (
       <tbody>
         {inventory.map((vehicle) => (
