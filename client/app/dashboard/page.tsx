@@ -1,6 +1,8 @@
 import { InventoryStats, Vehicle } from "@/interfaces/app_interfaces";
 import { Metadata } from "next";
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Dashboard | JunkYardPro",
   description: "Dashboard to manage your junkyard inventory on JunkYardPro.",
@@ -32,18 +34,22 @@ const Dashboard = async () => {
         <h2 className="text-xl font-semibold mb-2">Recent Activity</h2>
         <div className="bg-white p-4 rounded-lg shadow-md">
           <ul className="list-disc list-inside">
-            {recent_vehicles.length > 0 ? recent_vehicles.map((vehicle: Vehicle, index: number) => {
-              return (
-                <li
-                  key={index}
-                >{`Added new vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`}</li>
-              );
-            }) : <li>There is no recent activity.</li>}
+            {recent_vehicles.length > 0 ? (
+              recent_vehicles.map((vehicle: Vehicle, index: number) => {
+                return (
+                  <li
+                    key={index}
+                  >{`Added new vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`}</li>
+                );
+              })
+            ) : (
+              <li>There is no recent activity.</li>
+            )}
           </ul>
         </div>
       </section>
     </main>
   );
-}
+};
 
 export default Dashboard;

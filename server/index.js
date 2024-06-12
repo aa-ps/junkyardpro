@@ -44,24 +44,29 @@ const executeQuery = async (query, params = []) => {
   }
 };
 
+// Helper function to send error response
+const sendErrorResponse = (res, statusCode, message) => {
+  res.status(statusCode).json({ error: message });
+};
+
 // Routes
 
 // Login Route
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const query = `SELECT * FROM users WHERE username=?`;
+  const query = "SELECT * FROM users WHERE username=?";
 
   try {
     const results = await executeQuery(query, [username]);
     if (results.length > 0) {
-      const valid = await bcrypt.compare(password, results[0].password);
-      if (valid) {
-        return res.json(results);
+      const isValid = await bcrypt.compare(password, results[0].password);
+      if (isValid) {
+        return res.json(results[0]);
       }
     }
-    res.status(401).send("Invalid credentials");
+    sendErrorResponse(res, 401, "Invalid credentials");
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
@@ -70,41 +75,41 @@ app.post("/register", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const query = `INSERT INTO users (username, password) VALUES (?,?)`;
-    const results = await executeQuery(query, [username, hash]);
-    res.status(201).json(results);
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const query = "INSERT INTO users (username, password) VALUES (?, ?)";
+    await executeQuery(query, [username, hashedPassword]);
+    res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Years Route
-app.get("/years", async (req, res) => {
+app.get("/years", async (_, res) => {
   const query = "SELECT DISTINCT year FROM vehicles ORDER BY year";
 
   try {
     const results = await executeQuery(query);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Part Categories Route
-app.get("/part-categories", async (req, res) => {
+app.get("/part-categories", async (_, res) => {
   const query = "SELECT DISTINCT id, name FROM parts_category ORDER BY name";
 
   try {
     const results = await executeQuery(query);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Parts Route
-app.get("/parts", async (req, res) => {
+app.get("/parts", async (_, res) => {
   const query =
     "SELECT DISTINCT id, name, category_id FROM parts ORDER BY name";
 
@@ -112,14 +117,14 @@ app.get("/parts", async (req, res) => {
     const results = await executeQuery(query);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Makes Route
 app.get("/makes", async (req, res) => {
   const { year } = req.query;
-  if (!year) return res.status(400).send("Year is required");
+  if (!year) return sendErrorResponse(res, 400, "Year is required");
 
   const query =
     "SELECT DISTINCT make FROM vehicles WHERE year = ? ORDER BY make";
@@ -128,14 +133,15 @@ app.get("/makes", async (req, res) => {
     const results = await executeQuery(query, [year]);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Models Route
 app.get("/models", async (req, res) => {
   const { year, make } = req.query;
-  if (!year || !make) return res.status(400).send("Year and Make are required");
+  if (!year || !make)
+    return sendErrorResponse(res, 400, "Year and Make are required");
 
   const query =
     "SELECT DISTINCT model FROM vehicles WHERE year = ? AND make = ? ORDER BY model";
@@ -144,15 +150,17 @@ app.get("/models", async (req, res) => {
     const results = await executeQuery(query, [year, make]);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Trims Route
 app.get("/trims", async (req, res) => {
   const { year, make, model } = req.query;
-  if (!year || !make || !model)
-    return res.status(400).send("Year, Make, and Model are required");
+
+  if (!year || !make || !model) {
+    return sendErrorResponse(res, 400, "Year, Make, and Model are required");
+  }
 
   const query =
     "SELECT DISTINCT trim FROM vehicles WHERE year = ? AND make = ? AND model = ?";
@@ -161,53 +169,53 @@ app.get("/trims", async (req, res) => {
     const results = await executeQuery(query, [year, make, model]);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Inventory Route
-app.get("/inventory", async (req, res) => {
+app.get("/inventory", async (_, res) => {
   const query = `
     SELECT added_vehicles.id, year, make, model, trim 
     FROM added_vehicles 
-    JOIN vehicles ON added_vehicles.vehicle_id=vehicles.id 
+    JOIN vehicles ON added_vehicles.vehicle_id = vehicles.id 
     ORDER BY added_vehicles.id`;
 
   try {
     const results = await executeQuery(query);
     res.json(results);
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
 // Get Inventory Stats Route
-app.get("/inventory/stats", async (req, res) => {
+app.get("/inventory/stats", async (_, res) => {
   try {
-    const vehicleCountResult = await executeQuery(
-      "SELECT COUNT(*) AS count FROM added_vehicles"
-    );
-    const partCountResult = await executeQuery(
-      "SELECT COUNT(*) AS count FROM vehicle_parts WHERE available=TRUE"
-    );
-    const recentVehicles = await executeQuery(`
+    const vehicleCountQuery = "SELECT COUNT(*) AS count FROM added_vehicles";
+    const partCountQuery =
+      "SELECT COUNT(*) AS count FROM vehicle_parts WHERE available = TRUE";
+    const recentVehiclesQuery = `
       SELECT * 
       FROM added_vehicles 
-      JOIN vehicles ON added_vehicles.vehicle_id=vehicles.id 
+      JOIN vehicles ON added_vehicles.vehicle_id = vehicles.id 
       ORDER BY added_vehicles.id DESC 
-      LIMIT 3
-    `);
+      LIMIT 3`;
 
-    const { count: vehicle_count } = vehicleCountResult[0];
-    const { count: part_count } = partCountResult[0];
+    const [vehicleCountResult, partCountResult, recentVehicles] =
+      await Promise.all([
+        executeQuery(vehicleCountQuery),
+        executeQuery(partCountQuery),
+        executeQuery(recentVehiclesQuery),
+      ]);
 
     res.json({
-      vehicle_count,
-      part_count,
+      vehicle_count: vehicleCountResult[0].count,
+      part_count: partCountResult[0].count,
       recent_vehicles: recentVehicles,
     });
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
@@ -223,57 +231,100 @@ app.post("/add-vehicle", async (req, res) => {
     !Array.isArray(parts) ||
     !parts.length
   ) {
-    return res
-      .status(400)
-      .send(
-        "All vehicle information and a non-empty parts array are required."
-      );
+    return sendErrorResponse(
+      res,
+      400,
+      "All vehicle information and a non-empty parts array are required."
+    );
   }
 
-  const vehicleQuery =
-    "SELECT DISTINCT id FROM vehicles WHERE year = ? AND make = ? AND model = ? AND trim = ?";
-  const addVehicleQuery = "INSERT INTO added_vehicles (vehicle_id) VALUES (?)";
-  const addPartsQuery =
-    "INSERT INTO vehicle_parts (vehicle_id, part_id, available) VALUES (?, ?, ?)";
-
   try {
+    const vehicleQuery =
+      "SELECT DISTINCT id FROM vehicles WHERE year = ? AND make = ? AND model = ? AND trim = ?";
+    const addVehicleQuery =
+      "INSERT INTO added_vehicles (vehicle_id) VALUES (?)";
+    const addPartsQuery =
+      "INSERT INTO vehicle_parts (vehicle_id, part_id, available) VALUES (?, ?, ?)";
+
     const vehicleResults = await executeQuery(vehicleQuery, [
       year,
       make,
       model,
       trim,
     ]);
+
     if (vehicleResults.length === 0) {
-      return res.status(404).send("Vehicle not found.");
+      return sendErrorResponse(res, 404, "Vehicle not found.");
     }
 
     const { id: vehicle_id } = vehicleResults[0];
     await executeQuery(addVehicleQuery, [vehicle_id]);
 
-    const addedVehicleId = (
-      await executeQuery("SELECT LAST_INSERT_ID() AS id")
-    )[0].id;
+    const [{ id: addedVehicleId }] = await executeQuery(
+      "SELECT LAST_INSERT_ID() AS id"
+    );
 
     const addPartsPromises = parts.map(({ id, available }) =>
       executeQuery(addPartsQuery, [addedVehicleId, id, available])
     );
-
     await Promise.all(addPartsPromises);
 
     res.status(201).send("Vehicle added successfully.");
   } catch (err) {
-    res.status(500).send(err.message);
+    sendErrorResponse(res, 500, err.message);
   }
 });
 
-// Root Route
-app.get("/", (req, res) => {
-  res.render("index");
+// View Vehicle Route
+app.get("/view-vehicle/:id", async (req, res) => {
+  const { id } = req.params;
+  if (!id.match(/^\d+$/)) {
+    return sendErrorResponse(res, 400, "Invalid vehicle ID format");
+  }
+
+  try {
+    const findQuery = "SELECT * FROM added_vehicles WHERE id = ?";
+    const getVehicleQuery = "SELECT * FROM vehicles WHERE id = ?";
+    const getPartsQuery = `
+      SELECT *
+      FROM vehicle_parts 
+      JOIN parts ON vehicle_parts.part_id = parts.id 
+      WHERE vehicle_parts.vehicle_id = ?`;
+
+    const [addedVehicle] = await executeQuery(findQuery, [id]);
+    if (!addedVehicle) {
+      return sendErrorResponse(res, 404, "Vehicle not found");
+    }
+
+    const { vehicle_id } = addedVehicle;
+    const [vehicleData] = await executeQuery(getVehicleQuery, [vehicle_id]);
+    const partsData = await executeQuery(getPartsQuery, [id]);
+
+    if (!vehicleData) {
+      return sendErrorResponse(res, 404, "Vehicle details not found");
+    }
+
+    res.json({ vehicle: vehicleData, parts: partsData });
+  } catch (err) {
+    sendErrorResponse(res, 500, err.message);
+  }
 });
 
-// Start the Server
-initDbConnection().then(() => {
+app.use((req, res) => {
+  res.status(404).json({ error: "Resource not found" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong" });
+});
+
+const startServer = async () => {
+  await initDbConnection();
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
-});
+};
+
+startServer();

@@ -1,7 +1,7 @@
 "use client";
 
+import { PartCategory, SelectedPart } from '@/interfaces/app_interfaces';
 import { useState, ChangeEvent } from 'react';
-import { PartCategory, SelectedPart } from "./AddVehicleForm";
 
 interface PartsInputProps {
   partCategories: PartCategory[];
@@ -52,7 +52,7 @@ const PartsInput = ({ partCategories, selectedParts, setSelectedParts }: PartsIn
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-center text-2xl font-semibold mb-4">Parts Availability</h2>
+      <h2 className="text-center text-2xl p-2">Parts Availability</h2>
       {partCategories.map(category => (
         <fieldset key={category.id} className="border-t border-b border-gray-300 py-2 mb-4">
           <legend className="sr-only">{category.name}</legend>

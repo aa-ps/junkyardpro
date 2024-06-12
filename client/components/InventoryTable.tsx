@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Vehicle } from "@/interfaces/app_interfaces";
 
 interface InventoryTableProps {
@@ -7,7 +8,8 @@ interface InventoryTableProps {
 }
 
 const InventoryTable = ({ inventory }: InventoryTableProps) => {
-  // Could hardcode headers if you don't plan on changing them.
+  const router = useRouter();
+
   const headers = inventory.length > 0 ? Object.keys(inventory[0]) : ["id", "type", "brand", "model"];
   const renderHeader = () => {
     return (
@@ -21,6 +23,7 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
               {header}
             </th>
           ))}
+          <th className="uppercase px-4 py-2 border-b border-gray-300 text-left">Actions</th>
         </tr>
       </thead>
     );
@@ -31,7 +34,7 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
       return (
         <tbody>
           <tr>
-            <td colSpan={Object.keys(inventory[0] || headers).length} className="text-center p-4">
+            <td colSpan={headers.length + 1} className="text-center p-4">
               No vehicles in inventory.
             </td>
           </tr>
@@ -47,6 +50,14 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
                 {val}
               </td>
             ))}
+            <td className="px-4 py-2 border-b border-gray-300">
+              <button
+                className="bg-blue-500 text-white px-2 py-1 rounded"
+                onClick={() => router.push(`/vehicle/${vehicle.id}`)}
+              >
+                View
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>

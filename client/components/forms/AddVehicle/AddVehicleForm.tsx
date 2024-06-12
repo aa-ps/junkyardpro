@@ -52,6 +52,7 @@ const AddVehicleForm = ({
 
       if (!res.ok) throw new Error("Failed to add vehicle");
       router.push('/inventory');
+      router.refresh();
     } catch (err) {
       if (err instanceof Error) {
         setErrors([...errors, err]);
