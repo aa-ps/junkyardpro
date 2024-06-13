@@ -11,23 +11,22 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
   const router = useRouter();
 
   const headers = inventory.length > 0 ? Object.keys(inventory[0]) : ["id", "type", "brand", "model"];
-  const renderHeader = () => {
-    return (
-      <thead className="bg-gray-200">
-        <tr>
-          {headers.map((header) => (
-            <th
-              key={header}
-              className="uppercase px-4 py-2 border-b border-gray-300 text-left"
-            >
-              {header}
-            </th>
-          ))}
-          <th className="uppercase px-4 py-2 border-b border-gray-300 text-left">Actions</th>
-        </tr>
-      </thead>
-    );
-  };
+
+  const renderHeader = () => (
+    <thead className="bg-gray-200">
+      <tr>
+        {headers.map((header) => (
+          <th
+            key={header}
+            className="uppercase px-4 py-2 border-b border-gray-300 text-left"
+          >
+            {header}
+          </th>
+        ))}
+        <th className="uppercase px-4 py-2 border-b border-gray-300 text-left">Actions</th>
+      </tr>
+    </thead>
+  );
 
   const renderBody = () => {
     if (inventory.length === 0) {
@@ -52,7 +51,7 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
             ))}
             <td className="px-4 py-2 border-b border-gray-300">
               <button
-                className="bg-blue-500 text-white px-2 py-1 rounded"
+                className="bg-blue-500 text-white px-2 py-1 rounded shadow hover:bg-blue-700"
                 onClick={() => router.push(`/vehicle/${vehicle.id}`)}
               >
                 View
@@ -66,7 +65,7 @@ const InventoryTable = ({ inventory }: InventoryTableProps) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300">
+      <table className="min-w-full bg-white border border-gray-300 rounded-sm shadow-sm">
         {renderHeader()}
         {renderBody()}
       </table>

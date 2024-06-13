@@ -6,11 +6,11 @@ import VehicleInput from "./VehicleInput";
 import PartsInput from "./PartsInput";
 import { PartCategory, SelectedPart, YearOption } from "@/interfaces/app_interfaces";
 
-interface AddVehicleFormProps{
+interface AddVehicleFormProps {
   years: YearOption[];
   partCategories: PartCategory[];
   parts: SelectedPart[];
-};
+}
 
 const AddVehicleForm = ({
   years,
@@ -38,7 +38,7 @@ const AddVehicleForm = ({
     setErrors([]);
 
     try {
-      const res = await fetch(`${apiEndpoint}/add-vehicle`, {
+      const res = await fetch(`${apiEndpoint}/vehicle`, {
         method: "POST",
         body: JSON.stringify({
           year: selectedYear,
@@ -63,7 +63,8 @@ const AddVehicleForm = ({
   }
 
   return (
-    <form className="form-container" onSubmit={onSubmit}>
+    <form className="form-container mx-auto max-w-2xl bg-white p-6 rounded shadow-md" onSubmit={onSubmit}>
+      <h1 className="text-heading mb-4">Add Vehicle</h1>
       <VehicleInput
         years={years}
         errors={errors}
@@ -84,15 +85,15 @@ const AddVehicleForm = ({
           setSelectedParts={setSelectedParts}
         />
       )}
-      {errors && (
-        <p className="error-message">
+      {errors.length > 0 && (
+        <div className="error-message bg-red-100 p-3 rounded mt-4">
           {errors.map((err: Error, index: number) => (
-            <span key={index}>{err.message}</span>
+            <p key={index} className="text-red-600">{err.message}</p>
           ))}
-        </p>
+        </div>
       )}
       <button
-        className="form-button"
+        className="form-button bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mt-4"
         type="submit"
         disabled={
           isLoading ||

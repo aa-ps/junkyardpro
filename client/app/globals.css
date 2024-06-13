@@ -3,6 +3,31 @@
 @tailwind utilities;
 
 @layer utilities {
+
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 transition duration-300;
+  }
+
+  .text-heading {
+    @apply text-2xl font-semibold text-gray-800;
+  }
+
+  .text-subheading {
+    @apply text-xl font-medium text-gray-600;
+  }
+
+  .text-body {
+    @apply text-base text-gray-700;
+  }
+  
   .form-container {
     @apply bg-white p-6 rounded shadow-md w-full mx-auto my-10 max-w-4xl;
   }
@@ -19,13 +44,21 @@
     @apply block text-gray-700 font-medium mb-2;
   }
 
-  .form-select, 
+  .form-select,
   .form-input {
     @apply w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500;
   }
 
   .form-button {
     @apply bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300 disabled:bg-gray-400;
+  }
+
+  .save-button {
+    @apply bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300;
+  }
+
+  .delete-button {
+    @apply bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition duration-300;
   }
 
   .form-error {

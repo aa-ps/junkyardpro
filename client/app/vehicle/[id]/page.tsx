@@ -1,4 +1,3 @@
-import PartsInput from "@/components/forms/AddVehicle/PartsInput";
 import ViewVehicleForm from "@/components/forms/ViewVehicle/ViewVehicleForm";
 import {
   PartCategory,
@@ -8,7 +7,7 @@ import {
 import { notFound, redirect } from "next/navigation";
 
 const fetchVehicleData = async (id: number) => {
-  const endPoint = `http://localhost:3333/view-vehicle/${id}`;
+  const endPoint = `http://localhost:3333/vehicle/${id}`;
 
   try {
     const response = await fetch(endPoint);
@@ -43,22 +42,26 @@ const processIdAndGetData = async (slugId: string) => {
 
 const ViewVehicle = async ({ params }: { params: { id: string } }) => {
   const data = await processIdAndGetData(params.id);
-  const partCategories: PartCategory[] = await (
+  const { partCategories }: { partCategories: PartCategory[] } = await (
     await fetch("http://localhost:3333/part-categories")
   ).json();
   if (!data) {
-    return <p>Error: Vehicle data not found</p>;
+    return <p className="text-error">Error: Vehicle data not found</p>;
   }
 
   const { vehicle, parts }: { vehicle: Vehicle; parts: SelectedPart[] } = data;
 
   return (
-    <div>
-      <ViewVehicleForm
-        vehicle={vehicle}
-        partCategories={partCategories}
-        parts={parts}
-      />
+    <div className="container">
+      <div className="bg-white p-6 rounded shadow-md max-w-4xl mx-auto">
+        <h1 className="text-heading mb-4">Vehicle Details</h1>
+        <ViewVehicleForm
+          slug={parseInt(params.id)}
+          vehicle={vehicle}
+          partCategories={partCategories}
+          parts={parts}
+        />
+      </div>
     </div>
   );
 };

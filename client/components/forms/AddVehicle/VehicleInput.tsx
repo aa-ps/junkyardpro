@@ -1,7 +1,12 @@
 "use client";
 
-import { MakeOption, ModelOption, TrimOption, YearOption } from "@/interfaces/app_interfaces";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import {
+  MakeOption,
+  ModelOption,
+  TrimOption,
+  YearOption,
+} from "@/interfaces/app_interfaces";
+import React, { ChangeEvent, useState } from "react";
 
 interface VehicleInputProps {
   years: YearOption[];
@@ -39,7 +44,6 @@ const VehicleInput = ({
 
   const apiEndpoint = "http://localhost:3333";
 
-
   async function fetchData(endpoint: string, params = {}) {
     try {
       const query = new URLSearchParams(params).toString();
@@ -65,7 +69,7 @@ const VehicleInput = ({
     setTrims([]);
 
     setIsLoadingMakes(true);
-    const makesData = await fetchData("makes", { year });
+    const { makes: makesData } = await fetchData("makes", { year });
     setIsLoadingMakes(false);
     setMakes(makesData);
   };
@@ -79,7 +83,10 @@ const VehicleInput = ({
     setTrims([]);
 
     setIsLoadingModels(true);
-    const modelsData = await fetchData("models", { year: selectedYear, make });
+    const { models: modelsData } = await fetchData("models", {
+      year: selectedYear,
+      make,
+    });
     setIsLoadingModels(false);
     setModels(modelsData);
   };
@@ -91,7 +98,7 @@ const VehicleInput = ({
     setTrims([]);
 
     setIsLoadingTrims(true);
-    const trimsData = await fetchData("trims", {
+    const { trims: trimsData } = await fetchData("trims", {
       year: selectedYear,
       make: selectedMake,
       model,
@@ -101,12 +108,16 @@ const VehicleInput = ({
   };
 
   return (
-    <div>
-      <h2 className="text-center text-2xl p-2">Vehicle Specifications</h2>
-      <div className="form-group">
-        <label className="form-label">Year</label>
+    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+      <h2 className="text-center text-2xl p-4 text-gray-800">
+        Vehicle Specifications
+      </h2>
+      <div className="form-group mb-4">
+        <label className="form-label block mb-2 text-gray-700 font-semibold">
+          Year
+        </label>
         <select
-          className="form-select"
+          className="form-select block w-full mt-1 p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           name="year"
           value={selectedYear || ""}
           onChange={handleYearChange}
@@ -121,10 +132,12 @@ const VehicleInput = ({
           ))}
         </select>
       </div>
-      <div className="form-group">
-        <label className="form-label">Make</label>
+      <div className="form-group mb-4">
+        <label className="form-label block mb-2 text-gray-700 font-semibold">
+          Make
+        </label>
         <select
-          className="form-select"
+          className="form-select block w-full mt-1 p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           name="make"
           value={selectedMake || ""}
           onChange={handleMakeChange}
@@ -140,10 +153,12 @@ const VehicleInput = ({
           ))}
         </select>
       </div>
-      <div className="form-group">
-        <label className="form-label">Model</label>
+      <div className="form-group mb-4">
+        <label className="form-label block mb-2 text-gray-700 font-semibold">
+          Model
+        </label>
         <select
-          className="form-select"
+          className="form-select block w-full mt-1 p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           name="model"
           value={selectedModel || ""}
           onChange={handleModelChange}
@@ -160,9 +175,11 @@ const VehicleInput = ({
         </select>
       </div>
       <div className="form-group">
-        <label className="form-label">Trim</label>
+        <label className="form-label block mb-2 text-gray-700 font-semibold">
+          Trim
+        </label>
         <select
-          className="form-select"
+          className="form-select block w-full mt-1 p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           name="trim"
           value={selectedTrim || ""}
           onChange={(event) => setSelectedTrim(event.target.value)}
