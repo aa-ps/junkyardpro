@@ -78,10 +78,10 @@ const TABLE_QUERIES = {
   let connection;
   try {
     connection = mysql.createPool({
-      host: process.env.DB_HOST || "host.docker.internal",
-      user: process.env.DB_USER || "root",
-      password: process.env.DB_PASSWORD || "root",
-      database: process.env.DB_NAME || "db",
+      host: process.env.MYSQL_HOST,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE,
       waitForConnections: true,
       connectionLimit: 100,
       queueLimit: 0,

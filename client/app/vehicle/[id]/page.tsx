@@ -7,7 +7,7 @@ import {
 import { notFound, redirect } from "next/navigation";
 
 const fetchVehicleData = async (id: number) => {
-  const endPoint = `http://localhost:3333/vehicle/${id}`;
+  const endPoint = `http://server:5000/vehicle/${id}`;
 
   try {
     const response = await fetch(endPoint);
@@ -43,7 +43,7 @@ const processIdAndGetData = async (slugId: string) => {
 const ViewVehicle = async ({ params }: { params: { id: string } }) => {
   const data = await processIdAndGetData(params.id);
   const { partCategories }: { partCategories: PartCategory[] } = await (
-    await fetch("http://localhost:3333/part-categories")
+    await fetch("http://server:5000/part-categories")
   ).json();
   if (!data) {
     return <p className="text-error">Error: Vehicle data not found</p>;

@@ -1,4 +1,3 @@
-// app/add-vehicle/page.tsx
 import AddVehicleForm from "@/components/forms/AddVehicle/AddVehicleForm";
 import {
   Part,
@@ -19,9 +18,9 @@ const initializeSelectedParts = ({ parts }: { parts: Part[] }): SelectedPart[] =
 
 export default async function AddVehicle() {
   try {
-    const yearsResponse = await fetch("http://localhost:3333/years");
-    const partCategoriesResponse = await fetch("http://localhost:3333/part-categories");
-    const partsResponse = await fetch("http://localhost:3333/parts");
+    const yearsResponse = await fetch("http://server:5000/years");
+    const partCategoriesResponse = await fetch("http://server:5000/part-categories");
+    const partsResponse = await fetch("http://server:5000/parts");
 
     if (!yearsResponse.ok || !partCategoriesResponse.ok || !partsResponse.ok) {
       throw new Error('Failed to fetch data from the server');

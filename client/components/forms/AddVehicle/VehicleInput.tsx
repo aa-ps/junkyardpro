@@ -42,7 +42,7 @@ const VehicleInput = ({
   const [isLoadingModels, setIsLoadingModels] = useState<boolean>(false);
   const [isLoadingTrims, setIsLoadingTrims] = useState<boolean>(false);
 
-  const apiEndpoint = "http://localhost:3333";
+  const apiEndpoint = "http://127.0.0.1:5000";
 
   async function fetchData(endpoint: string, params = {}) {
     try {

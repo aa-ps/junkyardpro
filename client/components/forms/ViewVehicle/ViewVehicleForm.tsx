@@ -48,7 +48,7 @@ const ViewVehicleForm = ({
   const confirmDelete = async () => {
     setIsPopupVisible(false);
     try {
-      const response = await fetch(`http://localhost:3333/vehicle/${slug}`, {
+      const response = await fetch(`http://127.0.0.1:5000/vehicle/${slug}`, {
         method: "DELETE",
       });
 
@@ -66,7 +66,7 @@ const ViewVehicleForm = ({
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:3333/vehicle/${slug}`, {
+      const response = await fetch(`http://127.0.0.1:5000/vehicle/${slug}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

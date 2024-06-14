@@ -25,7 +25,7 @@ const AddVehicleForm = ({
   const [errors, setErrors] = useState<Array<Error>>([]);
   const [selectedParts, setSelectedParts] = useState(parts);
 
-  const apiEndpoint = "http://localhost:3333";
+  const apiEndpoint = "http://127.0.0.1:5000";
   const router = useRouter();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {

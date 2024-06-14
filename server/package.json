@@ -11,7 +11,7 @@
     "path": "^0.12.7"
   },
   "scripts": {
-    "setup": "node ./setup.js",
-    "start": "nodemon ./index.js"
+    "prestart": "node setup.js",
+    "start": "node index.js"
   }
 }

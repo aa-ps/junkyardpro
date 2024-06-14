@@ -5,13 +5,13 @@ const bcrypt = require("bcrypt");
 const app = express();
 
 // Constants
-const PORT = 3333;
+const PORT = 5000;
 const SALT_ROUNDS = 10;
 const connectionConfig = {
-  host: "host.docker.internal",
-  user: "root",
-  password: "root",
-  database: "db",
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 };
 
 // Middleware
@@ -50,6 +50,11 @@ const sendResponse = (res, statusCode, data) => {
 };
 
 // Routes
+
+// To verify the server is ok
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // Login Route
 app.post("/login", async (req, res) => {

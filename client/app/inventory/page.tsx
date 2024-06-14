@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function Inventory() {
   try {
     const { inventory } = await (
-      await fetch("http://localhost:3333/inventory", { cache: "no-store" })
+      await fetch("http://server:5000/inventory", { cache: "no-store" })
     ).json();
     return (
       <div className="container">

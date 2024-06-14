@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const Dashboard = async () => {
   const { part_count, vehicle_count, recent_vehicles }: InventoryStats = await (
-    await fetch("http://localhost:3333/inventory/stats", { cache: "no-store" })
+    await fetch("http://server:5000/inventory/stats", { cache: "no-store" })
   ).json();
   return (
     <div className="container">
